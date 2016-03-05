@@ -1,4 +1,3 @@
-//Uso do webservice
 
 package oncai;
  
