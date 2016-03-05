@@ -13,7 +13,7 @@ class CalculadoraClient {
         Service ws = Service.create(url, qname);
         CalculadoraServer calc = ws.getPort(CalculadoraServer.class);
  
-        System.out.println("Soma (25+1): " + calc.soma(25,1));
+        System.out.println("Soma (21+1): " + calc.soma(21,1));
         System.out.println("Subtracao (-5-1): " + calc.subtracao(-5,1));
         System.out.println("Multiplicacao (5*1): " + calc.multiplicacao(5,1));
         System.out.println("Divisao (100/0): " + calc.divisao(100,0));
