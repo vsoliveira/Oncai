@@ -15,7 +15,7 @@ public class Player {
 	
 	public Player(){
 		
-		ImageIcon img = new ImageIcon("C://Oncai//images//dog.png");
+		ImageIcon img = new ImageIcon("src//main//resources//images//dog.png");
 		player = img.getImage();
 		
 		

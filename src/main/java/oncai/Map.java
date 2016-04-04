@@ -8,6 +8,8 @@ import javax.swing.ImageIcon;
 
 public class Map {
 	
+	InputStream is;
+	
 	private Scanner m;
 	private String Map[] = new String[10];
 	
@@ -17,16 +19,14 @@ public class Map {
 				  jaguar;
 	
 	public Map(){
-		
-		ImageIcon img = new ImageIcon("C://Oncai//images//grass.png");
+		ImageIcon img = new ImageIcon("src//main//resources//images//grass.png");
 		grass = img.getImage();
-		img = new ImageIcon("C://Oncai//images//wall.png");
+		img = new ImageIcon("src//main//resources//images//wall.png");
 		wall = img.getImage();
-		img = new ImageIcon("C://Oncai//images//dog.png");
-		dog = img.getImage();
-		img = new ImageIcon("C://Oncai//images//jaguar.png");
-		jaguar = img.getImage();
-		
+//		img = new ImageIcon("src//main//resources//images//dog.png");
+//		dog = img.getImage();
+//		img = new ImageIcon("src//main//resources//images//jaguar.png");
+//		jaguar = img.getImage();
 		
 		openFile();
 		readFile();
@@ -58,7 +58,7 @@ public class Map {
 	public void openFile(){
 		
 		try {
-			m = new Scanner(new File("C://Oncai//images//Map.txt"));			
+			m = new Scanner(new File("src//main//resources//images//Map.txt"));			
 		} catch (Exception e) {
 			System.out.println("Erro ao carregar o mapa:" + e);
 		}
