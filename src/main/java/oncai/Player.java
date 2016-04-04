@@ -5,54 +5,52 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 
 public class Player {
-	
-	private int x,
-				y,
-				tileX,
-				tileY;
-	
+
+	private int	tileX,
+	tileY;
+
 	private Image player;
-	
+
 	public Player(){
-		
+
 		ImageIcon img = new ImageIcon("src//main//resources//images//dog.png");
 		player = img.getImage();
-		
-		
-		x = 32;
-		y = 32;
-		
+
 		tileX = 1;
 		tileY = 1;
 	}
-	
-	public void move(int dx, int dy, int tx, int ty){
-		x += dx;
-		y += dy;
-		
-		tileX += tx;
-		tileY += ty;
+
+	public Player(int x, int y, String animal){
+
+		if (animal.equals("dog")){
+			ImageIcon img = new ImageIcon("src//main//resources//images//dog.png");
+			player = img.getImage();
+		}
+		if (animal.equals("jaguar")){
+			ImageIcon img = new ImageIcon("src//main//resources//images//jaguar.png");
+			player = img.getImage();
+		}
+
+		tileX = x;
+		tileY = y;
 	}
-	
-	public int getX(){
-		return x;
+
+	public void move(int dx, int dy){
+		tileX += dx;
+		tileY += dy;
 	}
-	
-	public int getY(){
-		return y;
-	}
-	
+
 	public int getTileX(){
 		return tileX;
 	}
-	
+
 	public int getTileY(){
 		return tileY;
 	}
-	
+
 	public Image getPlayer(){
 		return player;
 	}
-	
-	
+
+
 }

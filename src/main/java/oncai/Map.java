@@ -23,10 +23,6 @@ public class Map {
 		grass = img.getImage();
 		img = new ImageIcon("src//main//resources//images//wall.png");
 		wall = img.getImage();
-//		img = new ImageIcon("src//main//resources//images//dog.png");
-//		dog = img.getImage();
-//		img = new ImageIcon("src//main//resources//images//jaguar.png");
-//		jaguar = img.getImage();
 		
 		openFile();
 		readFile();
