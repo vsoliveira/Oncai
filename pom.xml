@@ -6,7 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>Jogo da Onça</name>
-  	<description>Jogo da Onça para disciplina de IA</description>
+	<description>Jogo da Onça para disciplina de IA</description>
 
 	<url>http://maven.apache.org</url>
 	<!-- Defino alguma propriedades, que serao utilizadas para o Manifest -->
@@ -32,6 +32,22 @@
 			<artifactId>javaee-api</artifactId>
 			<version>7.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>3.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugin-tools</groupId>
+			<artifactId>maven-plugin-annotations</artifactId>
+			<version>3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<version>2.6</version>
+		</dependency>
+
 	</dependencies>
 
 	<!-- Url para o respositorio git (github), utilizada pelo buildnumber -->
@@ -60,10 +76,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.6</version>
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>oncai.Main</mainClass>
+							<mainClass>oncai.Oncai</mainClass>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 						</manifest>
 						<manifestEntries>
