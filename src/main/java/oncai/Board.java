@@ -6,10 +6,13 @@ import javax.swing.*;
 
 public class Board extends JPanel implements ActionListener{
 
+	private static final long serialVersionUID = 1221064099118621189L;
+	
 	private Timer timer;
 	private Map m;
-	private Player d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,
-				   d11,d12,d13,d14,d15,
+	private Player d1,d2,d3,d4,d5,
+				   d6,d7,d8,d9,d10,
+				   d11,d12,d13,d14,
 				   j;
 
 	private String message = "";
