@@ -40,7 +40,7 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
 		}
 
 		Image chessPiecesImage;
-		chessPiecesImage = new ImageIcon("src/ChessPieces.png").getImage();
+		chessPiecesImage = new ImageIcon("src/main/resources/images/ChessPieces.png").getImage();
 		for(int i=0; i<35; i++){
 			int j=-1, k=-1;
 			switch (Oncai2.oncaiBoard [i/5][i%5]) {
