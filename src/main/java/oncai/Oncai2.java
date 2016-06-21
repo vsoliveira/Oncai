@@ -1,22 +1,26 @@
 package oncai;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 
 public class Oncai2 {
 	static String oncaiBoard[][] = {
 			/*0*//*1*//*2*//*3*//*4*/	
-			/*0*/		{"j" ," " ," " ," " ," "},
-			/*1*/		{" " ," " ," " ," " ," "},
-			/*2*/		{" " ," " ," " ," " ," "},
+			/*0*/		{"d" ,"d" ,"d" ,"d" ,"d"},
+			/*1*/		{"d" ,"d" ,"d" ,"d" ,"d"},
+			/*2*/		{"d" ,"d" ,"j" ,"d" ,"d"},
 			/*3*/		{" " ," " ," " ," " ," "},
 			/*4*/		{" " ," " ," " ," " ," "},
 			/*5*/		{"-" ," " ," " ," " ,"-"},
-			/*6*/		{" " ,"-" ,"d" ,"-" ," "}
+			/*6*/		{" " ,"-" ," " ,"-" ," "}
 	};
 	static int jaguarPosition;
 	static int humanAsJaguar = -1; // 1 = human as Jaguar, 0 = computer as Jaguar
@@ -24,18 +28,29 @@ public class Oncai2 {
 	static int globalDepth = 4;
 	public static void main(String[] args) throws IOException, InterruptedException {
 		while(!"j".equals(oncaiBoard[jaguarPosition/5][jaguarPosition%5])){jaguarPosition++;}
-
-		JFrame f = new JFrame("Oncai - Jogo da On�a");
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		UserInterface ui = new UserInterface();
-		f.add(ui);
-		f.setSize(500, 500);
-		f.setVisible(true);
+		JPanel painel = new JPanel();
+		JFrame janela = new JFrame("Oncai - Jogo da Onça");		
+		
+		painel.setLayout(new FlowLayout());
+	    painel.setOpaque(false);
+	    painel.setLayout(new FlowLayout(FlowLayout.LEFT));		
+		janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		janela.add(painel);
+	    janela.add(ui);
+		janela.pack();
+		janela.setVisible(true);
+		janela.setSize(325, 475);
+//		janela.setSize(500, 500);
+		janela.setVisible(true);
+		janela.setResizable(false);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		janela.setLocation(dim.width/2-janela.getSize().width/2, dim.height/2-janela.getSize().height/2);
 
-		Object[] option = {"M�quina","Humano","Demonstra��o"};
+		Object[] option = {"Máquina","Humano","Demonstração"};
 		humanAsJaguar = JOptionPane.showOptionDialog(null,
-				"Quem deve jogar com a on�a?",
-				"Oncai - Op��es",
+				"Quem deve jogar com a onça?",
+				"Oncai - Opções",
 				JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE,
 				null,
@@ -46,20 +61,20 @@ public class Oncai2 {
 			long startTime=System.currentTimeMillis();
 			makeMove(alphaBeta(globalDepth, 1000000, -1000000, "", 0));
 			long endTime=System.currentTimeMillis();
-			System.out.println("Eu s� levei "+(endTime-startTime)+" milisegundos para pensar nisso! Voc� � muito lerdo...");
+			System.out.println("Eu s� levei "+(endTime-startTime)+" milisegundos para pensar nisso! Você é muito lerdo...");
 			flipPlayer();
-			f.repaint();
+			janela.repaint();
 		}
 		if (humanAsJaguar==2){	
 			do{
 				makeMove(alphaBeta(globalDepth, 1000000, -1000000, "", 0));
 				flipPlayer();
-				f.repaint();
+				janela.repaint();
 				Thread.sleep(1000);
 
 				makeMove(alphaBeta(globalDepth, 1000000, -1000000, "", 0));
 				flipPlayer();
-				f.repaint();
+				janela.repaint();
 				Thread.sleep(1000);
 
 			} while (true);
@@ -79,6 +94,7 @@ public class Oncai2 {
 		//x1, y1, x2, y2, capturePiece, scoreAlphaBeta e.g. 2232 3214214324
 		String list = posibleMoves();	
 		if (depth == 0 || list.length() == 0) {
+//			return move + (Rating.rating(list.length(), depth) * (player*2-1));
 			return move + (Rating.rating(list.length(), depth) * (player*2-1));
 		}
 		list=sortMoves(list);
@@ -166,13 +182,9 @@ public class Oncai2 {
 		String list = "", oldPiece;
 		int r = i/5, c = i%5;
 		int rc = r+c;
-		if (r == 5 && c == 1){
-			List<Integer> position = new ArrayList<Integer>();
-			position.add(2);
-			position.add(5);
-			position.add(6);
-			for (int l : position){
-				if (l!=4) {
+		if (r == 4 && c == 1){
+			for (int l = 0; l < 9; l++){
+				if (l % 2 != 0 && l != 7) {
 					try{
 						if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
 							//pega a pe�a que ser� "comida"
@@ -196,14 +208,10 @@ public class Oncai2 {
 					}
 				}
 			}
-		}else {
-			if (r == 5 && c == 3){
-				List<Integer> position = new ArrayList<Integer>();
-				position.add(0);
-				position.add(3);
-				position.add(8);
-				for (int l : position){
-					if (l!=4) {
+		} else {
+			if (r == 4 && c == 3){
+				for (int l = 0; l < 9; l++){
+					if (l % 2 != 0 && l != 7) {
 						try{
 							if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
 								//pega a pe�a que ser� "comida"
@@ -228,12 +236,14 @@ public class Oncai2 {
 					}
 				}
 			} else {
-				if (r == 6 && c == 0){
+
+				if (r == 5 && c == 1){
 					List<Integer> position = new ArrayList<Integer>();
 					position.add(2);
 					position.add(5);
+					position.add(6);
 					for (int l : position){
-						if (l == 2){
+						if (l!=4) {
 							try{
 								if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
 									//pega a pe�a que ser� "comida"
@@ -252,44 +262,19 @@ public class Oncai2 {
 									oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
 									jaguarPosition = jaguarTemp;
 								}
-
-							}
-
-							catch(Exception e){
-							}
-						} else {
-							try{
-								if ( oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
-									//pega a pe�a que ser� "comida"
-									oldPiece = oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)];
-									//deixa livre a posi��o que est� a pe�a que ser� movida
-									oncaiBoard[r][c] = " ";
-									//coloca a pe�a movida onde a outra foi "comida"
-									oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = "d";
-
-									int jaguarTemp = jaguarPosition;
-									jaguarPosition = i+(l/3) * 8 + l%3-9;
-									if (dogSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
-										list = list+r+c+((r-2+(l/3)*2))+((c-2+(l%3)*2))+"-"+"-"+oldPiece;
-									}
-									oncaiBoard[r][c] = "d";
-									oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = oldPiece;
-									jaguarPosition = jaguarTemp;
-								}
 							}
 							catch(Exception e){
 							}
 						}
-
 					}
-				} else {
-					if (r == 6 && c == 2){
+				}else {
+					if (r == 5 && c == 3){
 						List<Integer> position = new ArrayList<Integer>();
-						position.add(1);
+						position.add(0);
 						position.add(3);
-						position.add(5);
+						position.add(8);
 						for (int l : position){
-							if (l == 1){
+							if (l!=4) {
 								try{
 									if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
 										//pega a pe�a que ser� "comida"
@@ -311,37 +296,15 @@ public class Oncai2 {
 								}
 								catch(Exception e){
 								}
-							} else {
-								try{
-									if ( oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
-										//pega a pe�a que ser� "comida"
-										oldPiece = oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)];
-										//deixa livre a posi��o que est� a pe�a que ser� movida
-										oncaiBoard[r][c] = " ";
-										//coloca a pe�a movida onde a outra foi "comida"
-										oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = "d";
-
-										int jaguarTemp = jaguarPosition;
-										jaguarPosition = i+(l/3) * 8 + l%3-9;
-										if (dogSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
-											list = list+r+c+((r-2+(l/3)*2))+((c-2+(l%3)*2))+"-"+"-"+oldPiece;
-										}
-										oncaiBoard[r][c] = "d";
-										oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = oldPiece;
-										jaguarPosition = jaguarTemp;
-									}
-								}
-								catch(Exception e){
-								}
 							}
 						}
 					} else {
-						if (r == 6 && c == 4){
+						if (r == 6 && c == 0){
 							List<Integer> position = new ArrayList<Integer>();
-							position.add(0);
-							position.add(3);
+							position.add(2);
+							position.add(5);
 							for (int l : position){
-								if (l == 0){
+								if (l == 2){
 									try{
 										if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
 											//pega a pe�a que ser� "comida"
@@ -360,7 +323,9 @@ public class Oncai2 {
 											oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
 											jaguarPosition = jaguarTemp;
 										}
+
 									}
+
 									catch(Exception e){
 									}
 								} else {
@@ -386,12 +351,16 @@ public class Oncai2 {
 									catch(Exception e){
 									}
 								}
+
 							}
 						} else {
-
-							if (rc % 2 != 0){
-								for (int l = 0; l < 9; l++){
-									if (l % 2 != 0) {
+							if (r == 6 && c == 2){
+								List<Integer> position = new ArrayList<Integer>();
+								position.add(1);
+								position.add(3);
+								position.add(5);
+								for (int l : position){
+									if (l == 1){
 										try{
 											if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
 												//pega a pe�a que ser� "comida"
@@ -408,6 +377,28 @@ public class Oncai2 {
 												}
 												oncaiBoard[r][c] = "d";
 												oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
+												jaguarPosition = jaguarTemp;
+											}
+										}
+										catch(Exception e){
+										}
+									} else {
+										try{
+											if ( oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
+												//pega a pe�a que ser� "comida"
+												oldPiece = oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)];
+												//deixa livre a posi��o que est� a pe�a que ser� movida
+												oncaiBoard[r][c] = " ";
+												//coloca a pe�a movida onde a outra foi "comida"
+												oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = "d";
+
+												int jaguarTemp = jaguarPosition;
+												jaguarPosition = i+(l/3) * 8 + l%3-9;
+												if (dogSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
+													list = list+r+c+((r-2+(l/3)*2))+((c-2+(l%3)*2))+"-"+"-"+oldPiece;
+												}
+												oncaiBoard[r][c] = "d";
+												oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = oldPiece;
 												jaguarPosition = jaguarTemp;
 											}
 										}
@@ -415,30 +406,112 @@ public class Oncai2 {
 										}
 									}
 								}
-								return list;
 							} else {
-								for (int l = 0; l < 9; l++){
-									if (l!=4) {
-										try{
-											if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
-												//pega a pe�a que ser� "comida"
-												oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
-												//deixa livre a posi��o que est� a pe�a que ser� movida
-												oncaiBoard[r][c] = " ";
-												//coloca a pe�a movida onde a outra foi "comida"
-												oncaiBoard[r-1+l/3][c-1+l%3] = "d";
+								if (r == 6 && c == 4){
+									List<Integer> position = new ArrayList<Integer>();
+									position.add(0);
+									position.add(3);
+									for (int l : position){
+										if (l == 0){
+											try{
+												if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
+													//pega a pe�a que ser� "comida"
+													oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
+													//deixa livre a posi��o que est� a pe�a que ser� movida
+													oncaiBoard[r][c] = " ";
+													//coloca a pe�a movida onde a outra foi "comida"
+													oncaiBoard[r-1+l/3][c-1+l%3] = "d";
 
-												int jaguarTemp = jaguarPosition;
-												jaguarPosition = i+(l/3) * 8 + l%3-9;
-												if (dogSafe(r-1+l/3,c-1+l%3)){
-													list = list+r+c+(r-1+l/3)+(c-1+l%3)+"-"+"-"+oldPiece;
+													int jaguarTemp = jaguarPosition;
+													jaguarPosition = i+(l/3) * 8 + l%3-9;
+													if (dogSafe(r-1+l/3,c-1+l%3)){
+														list = list+r+c+(r-1+l/3)+(c-1+l%3)+"-"+"-"+oldPiece;
+													}
+													oncaiBoard[r][c] = "d";
+													oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
+													jaguarPosition = jaguarTemp;
 												}
-												oncaiBoard[r][c] = "d";
-												oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
-												jaguarPosition = jaguarTemp;
+											}
+											catch(Exception e){
+											}
+										} else {
+											try{
+												if ( oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
+													//pega a pe�a que ser� "comida"
+													oldPiece = oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)];
+													//deixa livre a posi��o que est� a pe�a que ser� movida
+													oncaiBoard[r][c] = " ";
+													//coloca a pe�a movida onde a outra foi "comida"
+													oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = "d";
+
+													int jaguarTemp = jaguarPosition;
+													jaguarPosition = i+(l/3) * 8 + l%3-9;
+													if (dogSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
+														list = list+r+c+((r-2+(l/3)*2))+((c-2+(l%3)*2))+"-"+"-"+oldPiece;
+													}
+													oncaiBoard[r][c] = "d";
+													oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = oldPiece;
+													jaguarPosition = jaguarTemp;
+												}
+											}
+											catch(Exception e){
 											}
 										}
-										catch(Exception e){
+									}
+								} else {
+
+									if (rc % 2 != 0){
+										for (int l = 0; l < 9; l++){
+											if (l % 2 != 0) {
+												try{
+													if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
+														//pega a pe�a que ser� "comida"
+														oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
+														//deixa livre a posi��o que est� a pe�a que ser� movida
+														oncaiBoard[r][c] = " ";
+														//coloca a pe�a movida onde a outra foi "comida"
+														oncaiBoard[r-1+l/3][c-1+l%3] = "d";
+
+														int jaguarTemp = jaguarPosition;
+														jaguarPosition = i+(l/3) * 8 + l%3-9;
+														if (dogSafe(r-1+l/3,c-1+l%3)){
+															list = list+r+c+(r-1+l/3)+(c-1+l%3)+"-"+"-"+oldPiece;
+														}
+														oncaiBoard[r][c] = "d";
+														oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
+														jaguarPosition = jaguarTemp;
+													}
+												}
+												catch(Exception e){
+												}
+											}
+										}
+										return list;
+									} else {
+										for (int l = 0; l < 9; l++){
+											if (l!=4) {
+												try{
+													if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
+														//pega a pe�a que ser� "comida"
+														oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
+														//deixa livre a posi��o que est� a pe�a que ser� movida
+														oncaiBoard[r][c] = " ";
+														//coloca a pe�a movida onde a outra foi "comida"
+														oncaiBoard[r-1+l/3][c-1+l%3] = "d";
+
+														int jaguarTemp = jaguarPosition;
+														jaguarPosition = i+(l/3) * 8 + l%3-9;
+														if (dogSafe(r-1+l/3,c-1+l%3)){
+															list = list+r+c+(r-1+l/3)+(c-1+l%3)+"-"+"-"+oldPiece;
+														}
+														oncaiBoard[r][c] = "d";
+														oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
+														jaguarPosition = jaguarTemp;
+													}
+												}
+												catch(Exception e){
+												}
+											}
 										}
 									}
 								}
@@ -448,7 +521,6 @@ public class Oncai2 {
 				}
 			}
 		}
-
 		return list;
 	}
 
@@ -458,13 +530,9 @@ public class Oncai2 {
 		String list = "", oldPiece;
 		int r = i/5, c = i%5;
 		int rc = r+c;
-		if (r == 5 && c == 1){
-			List<Integer> position = new ArrayList<Integer>();
-			position.add(2);
-			position.add(5);
-			position.add(6);
-			for (int l : position){
-				if (l!=4) {
+		if (r == 4 && c == 1){
+			for (int l = 0; l < 9; l++){
+				if (l % 2 != 0 && l != 7) {
 					try{
 						if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
 							//pega a pe�a que ser� "comida"
@@ -488,14 +556,10 @@ public class Oncai2 {
 					}
 				}
 			}
-		}else {
-			if (r == 5 && c == 3){
-				List<Integer> position = new ArrayList<Integer>();
-				position.add(0);
-				position.add(3);
-				position.add(8);
-				for (int l : position){
-					if (l!=4) {
+		} else {
+			if (r == 4 && c == 3){
+				for (int l = 0; l < 9; l++){
+					if (l % 2 != 0 && l != 7) {
 						try{
 							if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
 								//pega a pe�a que ser� "comida"
@@ -520,12 +584,13 @@ public class Oncai2 {
 					}
 				}
 			} else {
-				if (r == 6 && c == 0){
+				if (r == 5 && c == 1){
 					List<Integer> position = new ArrayList<Integer>();
 					position.add(2);
 					position.add(5);
+					position.add(6);
 					for (int l : position){
-						if (l == 2){
+						if (l!=4) {
 							try{
 								if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
 									//pega a pe�a que ser� "comida"
@@ -544,44 +609,19 @@ public class Oncai2 {
 									oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
 									jaguarPosition = jaguarTemp;
 								}
-
-							}
-
-							catch(Exception e){
-							}
-						} else {
-							try{
-								if ( oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
-									//pega a pe�a que ser� "comida"
-									oldPiece = oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)];
-									//deixa livre a posi��o que est� a pe�a que ser� movida
-									oncaiBoard[r][c] = " ";
-									//coloca a pe�a movida onde a outra foi "comida"
-									oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = "j";
-
-									int jaguarTemp = jaguarPosition;
-									jaguarPosition = i+(l/3) * 8 + l%3-9;
-									if (dogSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
-										list = list+r+c+((r-2+(l/3)*2))+((c-2+(l%3)*2))+"-"+"-"+oldPiece;
-									}
-									oncaiBoard[r][c] = "j";
-									oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = oldPiece;
-									jaguarPosition = jaguarTemp;
-								}
 							}
 							catch(Exception e){
 							}
 						}
-
 					}
-				} else {
-					if (r == 6 && c == 2){
+				}else {
+					if (r == 5 && c == 3){
 						List<Integer> position = new ArrayList<Integer>();
-						position.add(1);
+						position.add(0);
 						position.add(3);
-						position.add(5);
+						position.add(8);
 						for (int l : position){
-							if (l == 1){
+							if (l!=4) {
 								try{
 									if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
 										//pega a pe�a que ser� "comida"
@@ -603,37 +643,15 @@ public class Oncai2 {
 								}
 								catch(Exception e){
 								}
-							} else {
-								try{
-									if ( oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
-										//pega a pe�a que ser� "comida"
-										oldPiece = oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)];
-										//deixa livre a posi��o que est� a pe�a que ser� movida
-										oncaiBoard[r][c] = " ";
-										//coloca a pe�a movida onde a outra foi "comida"
-										oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = "j";
-
-										int jaguarTemp = jaguarPosition;
-										jaguarPosition = i+(l/3) * 8 + l%3-9;
-										if (dogSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
-											list = list+r+c+((r-2+(l/3)*2))+((c-2+(l%3)*2))+"-"+"-"+oldPiece;
-										}
-										oncaiBoard[r][c] = "j";
-										oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = oldPiece;
-										jaguarPosition = jaguarTemp;
-									}
-								}
-								catch(Exception e){
-								}
 							}
 						}
 					} else {
-						if (r == 6 && c == 4){
+						if (r == 6 && c == 0){
 							List<Integer> position = new ArrayList<Integer>();
-							position.add(0);
-							position.add(3);
+							position.add(2);
+							position.add(5);
 							for (int l : position){
-								if (l == 0){
+								if (l == 2){
 									try{
 										if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
 											//pega a pe�a que ser� "comida"
@@ -652,7 +670,9 @@ public class Oncai2 {
 											oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
 											jaguarPosition = jaguarTemp;
 										}
+
 									}
+
 									catch(Exception e){
 									}
 								} else {
@@ -678,47 +698,106 @@ public class Oncai2 {
 									catch(Exception e){
 									}
 								}
+
 							}
 						} else {
-							if (rc % 2 != 0){
-								for (int l = 0; l < 9; l++){
-									if (l % 2 != 0) {
-										if (l!=4) {
+							if (r == 6 && c == 2){
+								List<Integer> position = new ArrayList<Integer>();
+								position.add(1);
+								position.add(3);
+								position.add(5);
+								for (int l : position){
+									if (l == 1){
+										try{
+											if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
+												//pega a pe�a que ser� "comida"
+												oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
+												//deixa livre a posi��o que est� a pe�a que ser� movida
+												oncaiBoard[r][c] = " ";
+												//coloca a pe�a movida onde a outra foi "comida"
+												oncaiBoard[r-1+l/3][c-1+l%3] = "j";
+
+												int jaguarTemp = jaguarPosition;
+												jaguarPosition = i+(l/3) * 8 + l%3-9;
+												if (dogSafe(r-1+l/3,c-1+l%3)){
+													list = list+r+c+(r-1+l/3)+(c-1+l%3)+"-"+"-"+oldPiece;
+												}
+												oncaiBoard[r][c] = "j";
+												oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
+												jaguarPosition = jaguarTemp;
+											}
+										}
+										catch(Exception e){
+										}
+									} else {
+										try{
+											if ( oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
+												//pega a pe�a que ser� "comida"
+												oldPiece = oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)];
+												//deixa livre a posi��o que est� a pe�a que ser� movida
+												oncaiBoard[r][c] = " ";
+												//coloca a pe�a movida onde a outra foi "comida"
+												oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = "j";
+
+												int jaguarTemp = jaguarPosition;
+												jaguarPosition = i+(l/3) * 8 + l%3-9;
+												if (dogSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
+													list = list+r+c+((r-2+(l/3)*2))+((c-2+(l%3)*2))+"-"+"-"+oldPiece;
+												}
+												oncaiBoard[r][c] = "j";
+												oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = oldPiece;
+												jaguarPosition = jaguarTemp;
+											}
+										}
+										catch(Exception e){
+										}
+									}
+								}
+							} else {
+								if (r == 6 && c == 4){
+									List<Integer> position = new ArrayList<Integer>();
+									position.add(0);
+									position.add(3);
+									for (int l : position){
+										if (l == 0){
 											try{
-												if (oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
-													//pega a posi��o a pe�a ser� movida
+												if ( oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
+													//pega a pe�a que ser� "comida"
 													oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
 													//deixa livre a posi��o que est� a pe�a que ser� movida
 													oncaiBoard[r][c] = " ";
-													//coloca a pe�a na possivel desejada
+													//coloca a pe�a movida onde a outra foi "comida"
 													oncaiBoard[r-1+l/3][c-1+l%3] = "j";
 
 													int jaguarTemp = jaguarPosition;
-													jaguarPosition = i+(l/3) * 8 + l%3 - 9;
-													if (jaguarSafe(r-1+l/3,c-1+l%3)){
+													jaguarPosition = i+(l/3) * 8 + l%3-9;
+													if (dogSafe(r-1+l/3,c-1+l%3)){
 														list = list+r+c+(r-1+l/3)+(c-1+l%3)+"-"+"-"+oldPiece;
 													}
 													oncaiBoard[r][c] = "j";
 													oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
 													jaguarPosition = jaguarTemp;
 												}
-												if (oncaiBoard[r-1+l/3][c-1+l%3].equals("d") && oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
+											}
+											catch(Exception e){
+											}
+										} else {
+											try{
+												if ( oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
 													//pega a pe�a que ser� "comida"
-													oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
+													oldPiece = oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)];
 													//deixa livre a posi��o que est� a pe�a que ser� movida
 													oncaiBoard[r][c] = " ";
 													//coloca a pe�a movida onde a outra foi "comida"
-													oncaiBoard[r-1+l/3][c-1+l%3] = " ";
 													oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = "j";
 
 													int jaguarTemp = jaguarPosition;
 													jaguarPosition = i+(l/3) * 8 + l%3-9;
-													if (jaguarSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
-														list = list+r+c+((r-2+(l/3)*2))+(c-2+(l%3)*2)+(r-1+l/3)+(c-1+l%3)+oldPiece;
+													if (dogSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
+														list = list+r+c+((r-2+(l/3)*2))+((c-2+(l%3)*2))+"-"+"-"+oldPiece;
 													}
 													oncaiBoard[r][c] = "j";
-													oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
-													oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = " ";
+													oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = oldPiece;
 													jaguarPosition = jaguarTemp;
 												}
 											}
@@ -726,50 +805,99 @@ public class Oncai2 {
 											}
 										}
 									}
-								}
-								return list;
-							} else {
-								for (int l = 0; l < 9; l++){
-									if (l!=4) {
-										try{
-											if (oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
-												//pega a posi��o a pe�a ser� movida
-												oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
-												//deixa livre a posi��o que est� a pe�a que ser� movida
-												oncaiBoard[r][c] = " ";
-												//coloca a pe�a na possivel desejada
-												oncaiBoard[r-1+l/3][c-1+l%3] = "j";
+								} else {
+									if (rc % 2 != 0){
+										for (int l = 0; l < 9; l++){
+											if (l % 2 != 0) {
+												if (l!=4) {
+													try{
+														if (oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
+															//pega a posi��o a pe�a ser� movida
+															oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
+															//deixa livre a posi��o que est� a pe�a que ser� movida
+															oncaiBoard[r][c] = " ";
+															//coloca a pe�a na possivel desejada
+															oncaiBoard[r-1+l/3][c-1+l%3] = "j";
 
-												int jaguarTemp = jaguarPosition;
-												jaguarPosition = i+(l/3) * 8 + l%3 - 9;
-												if (jaguarSafe(r-1+l/3,c-1+l%3)){
-													list = list+r+c+(r-1+l/3)+(c-1+l%3)+"-"+"-"+oldPiece;
-												}
-												oncaiBoard[r][c] = "j";
-												oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
-												jaguarPosition = jaguarTemp;
-											}
-											if (oncaiBoard[r-1+l/3][c-1+l%3].equals("d") && oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
-												//pega a pe�a que ser� "comida"
-												oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
-												//deixa livre a posi��o que est� a pe�a que ser� movida
-												oncaiBoard[r][c] = " ";
-												//coloca a pe�a movida onde a outra foi "comida"
-												oncaiBoard[r-1+l/3][c-1+l%3] = " ";
-												oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = "j";
+															int jaguarTemp = jaguarPosition;
+															jaguarPosition = i+(l/3) * 8 + l%3 - 9;
+															if (jaguarSafe(r-1+l/3,c-1+l%3)){
+																list = list+r+c+(r-1+l/3)+(c-1+l%3)+"-"+"-"+oldPiece;
+															}
+															oncaiBoard[r][c] = "j";
+															oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
+															jaguarPosition = jaguarTemp;
+														}
+														if (oncaiBoard[r-1+l/3][c-1+l%3].equals("d") && oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
+															//pega a pe�a que ser� "comida"
+															oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
+															//deixa livre a posi��o que est� a pe�a que ser� movida
+															oncaiBoard[r][c] = " ";
+															//coloca a pe�a movida onde a outra foi "comida"
+															oncaiBoard[r-1+l/3][c-1+l%3] = " ";
+															oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = "j";
 
-												int jaguarTemp = jaguarPosition;
-												jaguarPosition = i+(l/3) * 8 + l%3-9;
-												if (jaguarSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
-													list = list+r+c+((r-2+(l/3)*2))+(c-2+(l%3)*2)+(r-1+l/3)+(c-1+l%3)+oldPiece;
+															int jaguarTemp = jaguarPosition;
+															jaguarPosition = i+(l/3) * 8 + l%3-9;
+															if (jaguarSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
+																list = list+r+c+((r-2+(l/3)*2))+(c-2+(l%3)*2)+(r-1+l/3)+(c-1+l%3)+oldPiece;
+															}
+															oncaiBoard[r][c] = "j";
+															oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
+															oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = " ";
+															jaguarPosition = jaguarTemp;
+														}
+													}
+													catch(Exception e){
+													}
 												}
-												oncaiBoard[r][c] = "j";
-												oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
-												oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = " ";
-												jaguarPosition = jaguarTemp;
 											}
 										}
-										catch(Exception e){
+										return list;
+									} else {
+										for (int l = 0; l < 9; l++){
+											if (l!=4) {
+												try{
+													if (oncaiBoard[r-1+l/3][c-1+l%3].equals(" ")){
+														//pega a posi��o a pe�a ser� movida
+														oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
+														//deixa livre a posi��o que est� a pe�a que ser� movida
+														oncaiBoard[r][c] = " ";
+														//coloca a pe�a na possivel desejada
+														oncaiBoard[r-1+l/3][c-1+l%3] = "j";
+
+														int jaguarTemp = jaguarPosition;
+														jaguarPosition = i+(l/3) * 8 + l%3 - 9;
+														if (jaguarSafe(r-1+l/3,c-1+l%3)){
+															list = list+r+c+(r-1+l/3)+(c-1+l%3)+"-"+"-"+oldPiece;
+														}
+														oncaiBoard[r][c] = "j";
+														oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
+														jaguarPosition = jaguarTemp;
+													}
+													if (oncaiBoard[r-1+l/3][c-1+l%3].equals("d") && oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)].equals(" ")){
+														//pega a pe�a que ser� "comida"
+														oldPiece = oncaiBoard[r-1+l/3][c-1+l%3];
+														//deixa livre a posi��o que est� a pe�a que ser� movida
+														oncaiBoard[r][c] = " ";
+														//coloca a pe�a movida onde a outra foi "comida"
+														oncaiBoard[r-1+l/3][c-1+l%3] = " ";
+														oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = "j";
+
+														int jaguarTemp = jaguarPosition;
+														jaguarPosition = i+(l/3) * 8 + l%3-9;
+														if (jaguarSafe((r-2+(l/3)*2),(c-2+(l%3)*2))){
+															list = list+r+c+((r-2+(l/3)*2))+(c-2+(l%3)*2)+(r-1+l/3)+(c-1+l%3)+oldPiece;
+														}
+														oncaiBoard[r][c] = "j";
+														oncaiBoard[r-1+l/3][c-1+l%3] = oldPiece;
+														oncaiBoard[(r-2+(l/3)*2)][(c-2+(l%3)*2)] = " ";
+														jaguarPosition = jaguarTemp;
+													}
+												}
+												catch(Exception e){
+												}
+											}
 										}
 									}
 								}

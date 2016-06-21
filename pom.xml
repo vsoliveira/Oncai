@@ -80,7 +80,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>oncai.Oncai</mainClass>
+							<mainClass>oncai.Oncai2</mainClass>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 						</manifest>
 						<manifestEntries>

@@ -9,13 +9,6 @@ public class Rating {
 		counter+=material;
 		counter+=rateMoveability(list,depth,material);
 		counter+=ratePositional();
-		Oncai2.flipPlayer();
-		material=rateMaterial();
-		counter-=rateAttack();
-		counter-=material;
-		counter-=rateMoveability(list,depth,material);
-		counter-=ratePositional();
-		Oncai2.flipPlayer();
 		return -(counter+depth*50);
 	}
 	public static int rateAttack(){

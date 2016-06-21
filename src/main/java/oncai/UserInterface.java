@@ -21,7 +21,13 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
-		this.setBackground(Color.black);
+		this.setBackground(new Color(255,200,100));
+//		JLabel movimentosPossiveis = new JLabel(Oncai2.posibleMoves());
+//	    movimentosPossiveis.setHorizontalAlignment(SwingConstants.RIGHT);
+//	    JLabel labelJaguar = new JLabel(String.valueOf(Oncai2.jaguarPosition));
+//	    labelJaguar.setHorizontalAlignment(SwingConstants.RIGHT);
+//	    this.add(movimentosPossiveis);
+//	    this.add(labelJaguar);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
 		for (int i = 0; i < 35; i+=1){
@@ -38,9 +44,9 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
 			g.fillOval(4*squareSize, 6*squareSize, squareSize, squareSize);
 
 		}
-
+		ClassLoader cl = this.getClass().getClassLoader();
 		Image chessPiecesImage;
-		chessPiecesImage = new ImageIcon("src/main/resources/images/ChessPieces.png").getImage();
+		chessPiecesImage = new ImageIcon(cl.getResource("images/ChessPieces.png")).getImage();
 		for(int i=0; i<35; i++){
 			int j=-1, k=-1;
 			switch (Oncai2.oncaiBoard [i/5][i%5]) {
